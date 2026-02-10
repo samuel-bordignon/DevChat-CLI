@@ -1,0 +1,29 @@
+{
+  "name": "devchat-cli",
+  "version": "1.0.0",
+  "description": "O DevChat CLI é um chat em tempo real feito para desenvolvedores, rodando diretamente no terminal.  A ideia é simples:  conversar com outros devs sem sair do ambiente de código.  Nada de abrir Discord, navegador ou apps pesados — só o terminal.",
+  "main": "index.js",
+  "bin": {
+    "devchat": "./dist/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samuel-bordignon/DevChat-CLI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/samuel-bordignon/DevChat-CLI/issues"
+  },
+  "homepage": "https://github.com/samuel-bordignon/DevChat-CLI#readme",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
