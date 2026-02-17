@@ -1,14 +1,13 @@
-// chatClient.ts
 import WebSocket from "ws";
-import { PromptManager } from "./utils/promptManeger.js";
-import { messageFormatter } from "./utils/messageFormater.js";
+import { PromptManager } from "../utils/promptManeger.js";
+import { messageFormatter } from "../utils/messageFormater.js";
 
 export const startClient = (url: string, nick: string) => {
     const ws = new WebSocket(url);
     const prompt = new PromptManager(nick);
 
     ws.on("open", () => {
-        console.log("✅ Conectado ao DevChat!");
+        console.log("✅ Conectado ao DevChat! ✅");
         prompt.show();
     });
 
@@ -29,6 +28,10 @@ export const startClient = (url: string, nick: string) => {
         } catch {
             console.log("Mensagem inválida recebida");
         }
+    });
+
+    ws.on("close", () => {
+        console.log("❌ Sala encerrada ❌");
     });
 
 }

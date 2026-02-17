@@ -1,16 +1,16 @@
 import { WebSocketServer } from "ws";
-import { getLocalIP } from "./utils/network.js";
-import { PromptManager } from "./utils/promptManeger.js";
-import { messageFormatter } from "./utils/messageFormater.js";
+import { getLocalIP } from "../utils/network.js";
+import { PromptManager } from "../utils/promptManeger.js";
+import { messageFormatter } from "../utils/messageFormater.js";
+import { startDiscovery } from "./startDiscovery.js";
 
-export function startServer(port: number) {
+export function startServer(port: number, roomName: string, key: string) {
     const wss = new WebSocketServer({
         port,
         host: "0.0.0.0",
     });
-    const nick = "HOST 👑"
-    const prompt = new PromptManager(nick)
-
+    const hostNick = "HOST 👑"
+    const prompt = new PromptManager(hostNick)
     const ip = getLocalIP();
 
     console.log("\n✅ DevChat Host iniciado!");
@@ -27,20 +27,19 @@ export function startServer(port: number) {
             }
         }
     }
-
+    //---------------- DISCOVERY LAN ----------------
+    startDiscovery(roomName, port, key != null)
     // ---------------- HOST INPUT ----------------
     prompt.onLine((line) => {
-        const msg = { nick, content: line };
-        broadcast(msg);
         prompt.show();
+        const msg = { hostNick, content: line };
+        broadcast(msg);
     });
 
     prompt.show();
-
     // ---------------- CLIENT CONNECTION ----------------
     wss.on("connection", (ws) => {
         console.log("👤 Novo cliente conectado!");
-
         ws.on("message", (data) => {
             const msg = JSON.parse(data.toString());
 
