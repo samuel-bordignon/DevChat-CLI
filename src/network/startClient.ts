@@ -2,21 +2,12 @@ import WebSocket from "ws"
 import { TerminalInput } from "../utils/terminalInput.js"
 import { messageFormatter } from "../utils/messageFormater.js"
 
-export const startClient = async (url: string) => {
-    const terminal = new TerminalInput("")
-
-    const nick = await terminal.question("Digite seu nick: ")
-    terminal.setNick(nick)
-
-    const key = await terminal.question("Digite a chave de acesso: ")
-    terminal.setNick(nick)
-
+export const startClient = async (url: string, nick: string, key?: string) => {
+    const terminal = new TerminalInput(nick)
     const ws = new WebSocket(url)
 
     ws.on("open", () => {
-        ws.send(JSON.stringify({ type: "join", nick: nick, key: key }))
-        console.log("✅ Conectado ao DevChat! ✅")
-        terminal.show()
+        ws.send(JSON.stringify({ type: "join", nick, key }))
     })
 
     terminal.onLine((line) => {
@@ -28,18 +19,39 @@ export const startClient = async (url: string) => {
         try {
             const msg = JSON.parse(data.toString())
 
-            if (msg.nick === nick) return
+            if (msg.type === "error") {
+                console.log(`\n❌ ${msg.content}`)
+                ws.close()
+                process.exit(1)
+            }
 
-            terminal.clearLine()
-            if (msg.type === "message") console.log(messageFormatter(msg.nick, msg.content))
-            terminal.show()
+            if (msg.type === "join_ok") {
+                console.log("✅ Conectado ao DevChat! ✅")
+                terminal.show()
+                return
+            }
+
+            if (msg.type === "message") {
+                if (msg.nick === nick) return
+                terminal.clearLine()
+                console.log(messageFormatter(msg.nick, msg.content))
+                terminal.show()
+            }
+
+            if (msg.type === "system") {
+                terminal.clearLine()
+                console.log(messageFormatter("SYSTEM", msg.content))
+                terminal.show()
+            }
         } catch {
             console.log("Mensagem inválida recebida")
         }
     })
 
     ws.on("close", () => {
+        terminal.clearLine()
         console.log("❌ Sala encerrada ❌")
+        process.exit(1)
     })
 
 }

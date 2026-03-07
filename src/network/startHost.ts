@@ -4,6 +4,7 @@ import { randomUUID } from "crypto"
 import { WebSocketServer } from "ws"
 import { getLocalIP } from "../utils/network.js"
 import { startDiscovery } from "./startDiscovery.js"
+import { waitForMessage } from "../utils/waitForMessage.js"
 
 export function startHost(roomName: string, port: number, key?: string) {
     const room = new Room(roomName, key)
@@ -23,27 +24,32 @@ export function startHost(roomName: string, port: number, key?: string) {
     })
 
     // Quando alguém conecta
-    wss.on("connection", (socket) => {
-        // cria User no Core
+    wss.on("connection", async (socket) => {
         const user = new User(randomUUID(), "anon", socket)
-        // mensagens recebidas
+
+        // ── FASE 1: HANDSHAKE ──
+        try {
+            const res = await waitForMessage(socket)
+
+            if (res.type === "join") {
+                user.nick = res.nick
+                room.addUser(user, res.key ?? null)
+            }
+
+            socket.send(JSON.stringify({ type: "join_ok" }))
+        } catch (err) {
+            socket.send(JSON.stringify({ type: "error", content: (err as Error).message }))
+            socket.close()
+            return
+        }
+        // ── FASE 2: CHAT ──
         socket.on("message", (data) => {
             try {
                 const msg = JSON.parse(data.toString())
-                if (msg.type === "join") {
-                    user.nick = msg.nick
-                    room.addUser(user, msg.key)
-                }
-                if (msg.type === "message") {
-                    room.broadcast({ type: "message", nick: user.nick, content: msg.content })
-                }
-            } catch (err) {
-                console.log(err)
+                room.broadcast({ type: "message", nick: user.nick, content: msg.content })
+            } catch {
+                socket.send(JSON.stringify({ type: "error", content: "Mensagem inválida" }))
             }
-        })
-
-        socket.on("close", () => {
-            room.broadcast({ type: "system", content: `${user.nick} saiu da sala` })
         })
     })
 

@@ -1,14 +1,12 @@
 import WebSocket from "ws"
 
-export type Message = {
-    type: "join"
-    nick: string
-    key: string
-} | {
-    type: "message"
-    content: string
-    nick: string
-}
+export type ClientMessage =
+    | { type: "join"; nick: string; key?: string }
+    | { type: "message"; content: string }
+
+export type ServerMessage =
+    | { type: "system" | "error"; content: string }
+    | { type: "message"; nick: string; content: string }
 
 export class User {
     constructor(
@@ -17,7 +15,7 @@ export class User {
         private socket: WebSocket,
     ) { }
 
-    send(data: Message) {
+    send(data: ServerMessage) {
         this.socket.send(JSON.stringify(data))
     }
 }
