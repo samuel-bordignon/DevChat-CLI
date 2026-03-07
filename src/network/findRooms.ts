@@ -1,13 +1,19 @@
 import dgram from "dgram";
 
-export function findRooms(timeout = 1000): Promise<any[]> {
+type RoomInfo = {
+  ip: string
+  room: string
+  port: number
+  isClose: boolean
+}
+
+export function findRooms(timeout = 1000): Promise<RoomInfo[]> {
   return new Promise((resolve) => {
     const udp = dgram.createSocket("udp4");
-    const rooms: any[] = [];
+    const rooms: RoomInfo[] = [];
 
     udp.bind(() => {
       udp.setBroadcast(true);
-
       // manda broadcast
       udp.send(
         "DEVCHAT_DISCOVER",
@@ -26,7 +32,9 @@ export function findRooms(timeout = 1000): Promise<any[]> {
           port: msg.port,
           isClose: msg.isClose
         });
-      } catch {}
+      } catch (err) {
+        console.log(err)
+      }
     });
 
     setTimeout(() => {
