@@ -14,9 +14,13 @@ export const findCommand = new Command("find")
         }
 
         console.log("🌍 Salas encontradas:\n");
-
-        rooms.forEach((r, i) => {
+        const privateRooms = rooms.filter((r) => r.isClose)
+        const publicRooms = rooms.filter((r) => !r.isClose)
+        const sortedRooms = [...publicRooms,...privateRooms]
+        
+        sortedRooms.forEach((r, i) => {
             const type = r.isClose ? "🔒 privada" : "🌍 pública";
-            console.log(`  [${i + 1}] ${r.room} (${type})`);
+            console.log(`[${i + 1}] Nome da sala: ${r.room}, Porta: ${r.port} (${type})`);
         });
+       
     });
