@@ -40,7 +40,7 @@ export const startClient = async (url: string, nick: string, key?: string) => {
 
             if (msg.type === "system") {
                 terminal.clearLine()
-                console.log(messageFormatter("Sistema", msg.content))
+                console.log(messageFormatter("SYSTEM", msg.content))
                 terminal.show()
             }
         } catch {
@@ -50,7 +50,7 @@ export const startClient = async (url: string, nick: string, key?: string) => {
 
     ws.on("close", () => {
         terminal.clearLine()
-        console.log("❌ Sala encerrada pelo host ❌")
+        console.log("❌ Sala encerrada ❌")
         process.exit(1)
     })
 

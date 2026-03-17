@@ -9,7 +9,7 @@ export const findCommand = new Command("find")
         const rooms = await findRooms();
 
         if (rooms.length === 0) {
-            console.log("\x1b[31m❌ Nenhuma sala encontrada.\x1b[0m");
+            console.log("❌ Nenhuma sala encontrada.");
             return;
         }
 
@@ -19,7 +19,7 @@ export const findCommand = new Command("find")
         const sortedRooms = [...publicRooms,...privateRooms]
         
         sortedRooms.forEach((r, i) => {
-            const type = r.isClose ? "🔒 Privada" : "🌍 Pública";
+            const type = r.isClose ? "🔒 privada" : "🌍 pública";
             console.log(`[${i + 1}] Nome da sala: ${r.room}, Porta: ${r.port} (${type})`);
         });
        
