@@ -55,5 +55,5 @@ export function startHost(roomName: string, port: number, key?: string) {
 
     console.log(`\n✅ Criando sala "${roomName}" na porta ${port}\n`)
     console.log(`🌍 Sala aberta em ws://localhost:${port}`)
-    console.log(`➡️ Outros entram com: devchat join ${getLocalIP()} --port ${port} --nick<nome> --key <chave>\n`)
+    console.log(`➡️ Outros entram com: devchat join ${getLocalIP()} --port ${port} --nick <nome> --key <chave>\n`)
 }

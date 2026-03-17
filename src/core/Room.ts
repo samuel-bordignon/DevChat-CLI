@@ -26,14 +26,14 @@ export class Room {
     addUser(user: User, key: string | null = null) {
         if (this.checkNick(user.nick) && this.checkKey(key)) {
             this.users.set(user.id, user)
-            this.broadcast({ type: "system", content: `${user.nick} entrou na sala` }, { excludeUserId: user.id });
+            this.broadcast({ type: "system", content: `${user.nick} Entrou na sala` }, { excludeUserId: user.id });
         }
     }
 
     removeUser(user: User) {
         this.users.delete(user.id);
 
-        this.broadcast({ type: "system", content: `${user.nick} saiu da sala` });
+        this.broadcast({ type: "system", content: `${user.nick} Saiu da sala` });
     }
 
     broadcast(msg: ServerMessage, options: { excludeUserId?: string } = {}) {
@@ -43,7 +43,7 @@ export class Room {
         }
 
         console.log(
-            msg.type === "system" && messageFormatter("SISTEM", msg.content) ||
+            msg.type === "system" && messageFormatter("Sistema", msg.content) ||
             msg.type === "message" && messageFormatter(msg.nick, msg.content)
         )
 
