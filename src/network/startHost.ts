@@ -15,10 +15,10 @@ export function startHost(roomName: string, port: number, key?: string) {
     //tratamento de erros
     wss.on("error", (err: NodeJS.ErrnoException) => {
         if (err.message.includes("EADDRINUSE")) {
-            console.log(`\n❌ A porta ${port} já está em uso. Escolha outra porta com --port <numero>.`)
+            console.log(`\n\x1b[31m❌ A porta ${port} já está em uso. Escolha outra porta com --port <numero>.\x1b[0m`)
             return
         }
-        console.log(`\n❌ Erro no servidor: ${err.message}`)
+        console.log(`\n\x1b[31m❌ Erro no servidor: ${err.message}\x1b[0m`)
 
         process.exit(1)
     })
@@ -53,7 +53,7 @@ export function startHost(roomName: string, port: number, key?: string) {
         })
     })
 
-    console.log(`\n✅ Criando sala "${roomName}" na porta ${port}\n`)
-    console.log(`🌍 Sala aberta em ws://localhost:${port}`)
-    console.log(`➡️ Outros entram com: devchat join ${getLocalIP()} --port ${port} --nick <nome> --key <chave>\n`)
+    console.log(`\n\x1b[33m✅ Criando sala "${roomName}" na porta ${port}\x1b[0m`)
+    console.log(`\x1b[36m🌍 Sala aberta em ws://localhost:${port}`)
+    console.log(`➡️  Outros entram com: devchat join ${getLocalIP()} --port ${port} --nick <nome> --key <chave>\n\x1b[0m`)
 }

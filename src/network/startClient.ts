@@ -26,7 +26,7 @@ export const startClient = async (url: string, nick: string, key?: string) => {
             }
 
             if (msg.type === "join_ok") {
-                console.log("✅ Conectado ao DevChat! ✅")
+                console.log("\x1b[32m✅ Conectado ao DevChat! ✅\x1b[0m")
                 terminal.show()
                 return
             }
@@ -50,7 +50,7 @@ export const startClient = async (url: string, nick: string, key?: string) => {
 
     ws.on("close", () => {
         terminal.clearLine()
-        console.log("❌ Sala encerrada pelo host ❌")
+        console.log("\x1b[31m❌ Sala encerrada pelo host ❌\x1b[0m")
         process.exit(1)
     })
 

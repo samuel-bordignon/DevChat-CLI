@@ -14,26 +14,26 @@ export class Room {
 
     checkNick(nick: string) {
         const nickTaken = [...this.users.values()].some(u => u.nick === nick)
-        if (nickTaken) throw new Error("Nome de usuário já presente na sala")
+        if (nickTaken) throw new Error("\x1b[31mNome de usuário já presente na sala\x1b[0m")
         return true
     }
 
     checkKey(key: string | null = null) {
-        if (key !== null && this.key !== key) throw new Error("Senha incorreta")
+        if (key !== null && this.key !== key) throw new Error("\x1b[31mSenha incorreta\x1b[0m")
         return true
     }
 
     addUser(user: User, key: string | null = null) {
         if (this.checkNick(user.nick) && this.checkKey(key)) {
             this.users.set(user.id, user)
-            this.broadcast({ type: "system", content: `${user.nick} Entrou na sala` }, { excludeUserId: user.id });
+            this.broadcast({ type: "system", content: `\x1b[33m${user.nick} Entrou na sala\x1b[0m` }, { excludeUserId: user.id });
         }
     }
 
     removeUser(user: User) {
         this.users.delete(user.id);
 
-        this.broadcast({ type: "system", content: `${user.nick} Saiu da sala` });
+        this.broadcast({ type: "system", content: `\x1b[33m${user.nick} Saiu da sala\x1b[0m` });
     }
 
     broadcast(msg: ServerMessage, options: { excludeUserId?: string } = {}) {
@@ -42,10 +42,13 @@ export class Room {
             user.send(msg);
         }
 
-        console.log(
-            msg.type === "system" && messageFormatter("Sistema", msg.content) ||
-            msg.type === "message" && messageFormatter(msg.nick, msg.content)
-        )
+        if (msg.type === "system") {
+            console.log(`\x1b[33mMensagem-Sistema: ${msg.content}\x1b[0m\n`)
+        }
+        else if (msg.type === "message") {
+            console.log(`\x1b[32m${messageFormatter(msg.nick, msg.content)}\x1b[0m`)
+        }
+
 
     }
 }
