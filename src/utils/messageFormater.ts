@@ -1,1 +1,0 @@
-export const messageFormatter = (nick: string, content: string) => `(${nick}): ${content}`
